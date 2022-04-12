@@ -42,6 +42,7 @@ wget https://www.linuxfromscratch.org/lfs/downloads/11.1-systemd/wget-list --dir
 wget --input-file=$LFS/sources/wget-list --continue --directory-prefix=$LFS/sources\
 # check md5 sum
 wget https://www.linuxfromscratch.org/lfs/downloads/11.1-systemd/md5sums --directory-prefix=$LFS/sources\
-pushd $LFS/source\
+pushd $LFS/sources\
 md5sum -c md5sums\
 popd\
+
