@@ -45,4 +45,7 @@ wget https://www.linuxfromscratch.org/lfs/downloads/11.1-systemd/md5sums --direc
 pushd $LFS/sources\
 md5sum -c md5sums\
 popd\
+Troubles occured with https://zlib.net/zlib-1.2.11.tar.xz, because of incorrect link.\
+Correct one is : http://zlib.net/fossils/zlib-1.2.11.tar.gz. \
+MD5 corrected too.
 
