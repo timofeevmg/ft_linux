@@ -86,3 +86,39 @@ esac
 
 chown -v lfs $LFS/sources
 ````
+# setting Up the Environment
+!!!\
+  remember login as lfs user\
+!!!
+````bash
+  su - lfs
+  
+  cat > ~/.bash_profile << "EOF"
+    exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+  EOF
+  
+  cat > ~/.bashrc << "EOF"
+    set +h
+    umask 022
+    LFS=/mnt/lfs
+    LC_ALL=POSIX
+    LFS_TGT=$(uname -m)-lfs-linux-gnu
+    PATH=/usr/bin
+    if [ ! -L /bin ]; then PATH=/bin:$PATH; fi
+    PATH=$LFS/tools/bin:$PATH
+    CONFIG_SITE=$LFS/usr/share/config.site
+    export LFS LC_ALL LFS_TGT PATH CONFIG_SITE
+  EOF
+````
+## !!!
+  Several commercial distributions add a non-documented instantiation of /etc/bash.bashrc to the initialization of bash. This file has the potential to modify the lfs user's environment in ways that can affect the building of critical LFS packages. To make sure the lfs user's environment is clean, check for the presence of /etc/bash.bashrc and, if present, move it out of the way. As the root user, run:\
+[ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE\
+  After use of the lfs user is finished at the beginning of Chapter 7, you can restore /etc/bash.bashrc
+(if desired).\
+Note that the LFS Bash package we will build in Section 8.34, “Bash-5.1.16” is not configured to load or
+execute /etc/bash.bashrc, so this file is useless on a completed LFS system.
+## !!!
+````bash
+  source ~/.bash_profile
+````
+Be sure of env variables with command "set".\
