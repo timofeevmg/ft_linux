@@ -121,4 +121,10 @@ execute /etc/bash.bashrc, so this file is useless on a completed LFS system.
 ````bash
   source ~/.bash_profile
 ````
-Be sure of env variables with command "set".\
+Be sure of env variables with command "set".
+
+Turn on a multicore compilation(4 - num of cores/proccessors):
+  ````bash
+  export MAKEFLAGS='-j4'
+  ````
+Return to single core if errors occured.\
