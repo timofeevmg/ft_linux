@@ -123,8 +123,18 @@ execute /etc/bash.bashrc, so this file is useless on a completed LFS system.
 ````
 Be sure of env variables with command "set".
 
-Turn on a multicore compilation(4 - num of cores/proccessors):
+Turn on (NOT RECOMMENDED!) a multicore compilation(4 - num of cores/proccessors):
   ````bash
   export MAKEFLAGS='-j4'
   ````
 Return to single core if errors occured.\
+  
+# building the LFS Cross Toolchain and Temporary Tools
+  !!!\
+The build instructions assume that the Host System Requirements, including symbolic links, have been set properly:\
+- bash is the shell in use.
+- sh is a symbolic link to bash.
+- /usr/bin/awk is a symbolic link to gawk.
+- /usr/bin/yacc is a symbolic link to bison or a small script that executes bison.\
+!!!\
+  compile_temp_lools_1.sh\
