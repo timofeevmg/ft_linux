@@ -259,10 +259,10 @@ The build instructions assume that the Host System Requirements, including symbo
   chgrp -v utmp /var/log/lastlog
   chmod -v 664  /var/log/lastlog
   chmod -v 600  /var/log/btmp
+  ````
   
   # compile and install 2nd part of software
   cd sources
   
-  
-  ````
-  
+  script: compile_temp_tools_2.sh
+ 
