@@ -265,4 +265,14 @@ The build instructions assume that the Host System Requirements, including symbo
   cd sources
   
   script: compile_temp_tools_2.sh
+  
+  cd ../
  
+  # Cleaning up and Saving the Temporary System
+  ````bash
+  rm -rf /usr/share/{info,man,doc}/*
+  find /usr/{lib,libexec} -name \*.la -delete
+  rm -rf /tools
+  
+  
+  ````
