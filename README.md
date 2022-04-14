@@ -138,3 +138,46 @@ The build instructions assume that the Host System Requirements, including symbo
 - /usr/bin/yacc is a symbolic link to bison or a small script that executes bison.\
 !!!\
   compile_temp_lools_1.sh\
+
+# entering Chroot and Building Additional Temporary Tools
+  
+  findmnt - list all of the mounted dir-s
+  
+  ````bash
+  # change the ownership of the $LFS/* directories to user root
+  chown -R root:root $LFS/{usr,lib,var,etc,bin,sbin,tools}
+  case $(uname -m) in
+    x86_64) chown -R root:root $LFS/lib64 ;;
+  esac
+  
+  # creating directories onto which the file systems will be mounted
+  mkdir -pv $LFS/{dev,proc,sys,run}
+  
+  # Creating Initial Device Nodes
+  mknod -m 600 $LFS/dev/console c 5 1
+  mknod -m 666 $LFS/dev/null c 1 3
+  
+  # Mounting and Populating /dev
+  mount -v --bind /dev $LFS/dev
+  
+  # Mounting Virtual Kernel File Systems
+  mount -v --bind /dev/pts $LFS/dev/pts
+  mount -vt proc proc $LFS/proc
+  mount -vt sysfs sysfs $LFS/sys
+  mount -vt tmpfs tmpfs $LFS/run
+  
+  if [ -h $LFS/dev/shm ]; then
+     mkdir -pv $LFS/$(readlink $LFS/dev/shm)
+  fi
+  
+  # Entering the Chroot Environment
+  sudo chroot "$LFS" /usr/bin/env -i   \
+    HOME=/root                  \
+    TERM="$TERM"                \
+    PS1='(lfs chroot) \u:\w\$ ' \
+    PATH=/usr/bin:/usr/sbin     \
+    /bin/bash --login
+  
+  
+  ````
+  
