@@ -273,6 +273,15 @@ The build instructions assume that the Host System Requirements, including symbo
   rm -rf /usr/share/{info,man,doc}/*
   find /usr/{lib,libexec} -name \*.la -delete
   rm -rf /tools
-  
-  
   ````
+  
+  # !!! at this point a backup can be made
+  
+  # Installing Basic System Software
+  cd sources
+  
+  script: install_basic_soft.sh
+  
+  !!!don`t forget make check during Glibc install!!!
+  
+  
