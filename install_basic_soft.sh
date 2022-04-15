@@ -483,4 +483,130 @@ passwd root
 cd ../
 rm -rf shadow-4.11.1
 
+#GCC
+tar -xf gcc-11.2.0.tar.xz
+cd gcc-11.2.0
+
+sed -e '/static.*SIGSTKSZ/d' \
+    -e 's/return kAltStackSize/return SIGSTKSZ * 4/' \
+    -i libsanitizer/sanitizer_common/sanitizer_posix_libcdep.cpp
+
+case $(uname -m) in
+  x86_64)
+    sed -e '/m64=/s/lib64/lib/' \
+        -i.orig gcc/config/i386/t-linux64
+  ;;
+esac
+
+mkdir -v build
+cd       build
+
+../configure --prefix=/usr            \
+             LD=ld                    \
+             --enable-languages=c,c++ \
+             --disable-multilib       \
+             --disable-bootstrap      \
+             --with-system-zlib
+make
+ulimit -s 32768
+chown -Rv tester .
+su tester -c "PATH=$PATH make -k check"
+
+make install
+rm -rf /usr/lib/gcc/$(gcc -dumpmachine)/11.2.0/include-fixed/bits/
+
+chown -v -R root:root \
+    /usr/lib/gcc/*linux-gnu/11.2.0/include{,-fixed}
+ln -svr /usr/bin/cpp /usr/lib
+ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/11.2.0/liblto_plugin.so \
+        /usr/lib/bfd-plugins/
+
+#sanity check (should be: [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2])
+echo 'int main(){}' > dummy.c
+cc dummy.c -v -Wl,--verbose &> dummy.log
+readelf -l a.out | grep ': /lib'
+
+# should be:
+#/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crt1.o succeeded
+#/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crti.o succeeded
+#/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/../../../../lib/crtn.o succeeded
+grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
+
+# should be: #include <...> search starts here:
+#/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include
+#/usr/local/include
+#/usr/lib/gcc/x86_64-pc-linux-gnu/11.2.0/include-fixed
+#/usr/include
+grep -B4 '^ /usr/include' dummy.log
+
+# should be:
+#SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib64")
+#SEARCH_DIR("/usr/local/lib64")
+#SEARCH_DIR("/lib64")
+#SEARCH_DIR("/usr/lib64")
+#SEARCH_DIR("/usr/x86_64-pc-linux-gnu/lib")
+#SEARCH_DIR("/usr/local/lib")
+#SEARCH_DIR("/lib")
+#SEARCH_DIR("/usr/lib");
+grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
+
+# should be: attempt to open /usr/lib/libc.so.6 succeeded
+grep "/lib.*/libc.so.6 " dummy.log
+
+# should be: found ld-linux-x86-64.so.2 at /usr/lib/ld-linux-x86-64.so.2
+grep found dummy.log
+
+rm -v dummy.c a.out dummy.log
+mkdir -pv /usr/share/gdb/auto-load/usr/lib
+mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
+
+cd ../../
+rm -rf gcc-11.2.0
+
+#Pkg-config
+tar -xf pkg-config-0.29.2.tar.gz
+cd pkg-config-0.29.2
+
+./configure --prefix=/usr              \
+            --with-internal-glib       \
+            --disable-host-tool        \
+            --docdir=/usr/share/doc/pkg-config-0.29.2
+make
+make check
+make install
+
+cd ../
+rm -rf pkg-config-0.29.2
+
+#Ncurses
+tar -xf ncurses-6.3.tar.gz
+cd ncurses-6.3
+
+./configure --prefix=/usr           \
+            --mandir=/usr/share/man \
+            --with-shared           \
+            --without-debug         \
+            --without-normal        \
+            --enable-pc-files       \
+            --enable-widec          \
+            --with-pkg-config-libdir=/usr/lib/pkgconfig
+make
+make DESTDIR=$PWD/dest install
+install -vm755 dest/usr/lib/libncursesw.so.6.3 /usr/lib
+rm -v  dest/usr/lib/{libncursesw.so.6.3,libncurses++w.a}
+cp -av dest/* /
+
+for lib in ncurses form panel menu ; do
+    rm -vf                    /usr/lib/lib${lib}.so
+    echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
+    ln -sfv ${lib}w.pc        /usr/lib/pkgconfig/${lib}.pc
+done
+
+rm -vf                     /usr/lib/libcursesw.so
+echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
+ln -sfv libncurses.so      /usr/lib/libcurses.so
+
+mkdir -pv      /usr/share/doc/ncurses-6.3
+cp -v -R doc/* /usr/share/doc/ncurses-6.3
+
 #
