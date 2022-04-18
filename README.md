@@ -141,6 +141,8 @@ The build instructions assume that the Host System Requirements, including symbo
 
 # entering Chroot and Building Additional Temporary Tools
   
+  RESTORE AFTER REBOOT SCRIPT: restore_virt_kernel_FS_after_reboot.sh
+  
   findmnt - list all of the mounted dir-s
   
   ````bash
