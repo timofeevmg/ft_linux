@@ -296,4 +296,17 @@ The build instructions assume that the Host System Requirements, including symbo
   userdel -r tester
   ````
   
+  # General Network Configuration
   
+  ````bash
+  cat > /etc/systemd/network/10-ether0.link << "EOF"
+  [Match]
+  # Change the MAC address as appropriate for your network device
+  MACAddress=08:00:27:20:A1:D5
+  
+  [Link]
+  Name=ether0
+  EOF  
+  
+  
+  ````
