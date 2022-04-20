@@ -484,3 +484,55 @@ devtmpfs        /dev          devtmpfs  mode=0755,nosuid    0       0
 # End /etc/fstab
 EOF
   ````
+  
+  # Install linux kernel
+  cd /sources\
+  ````bash
+  tar -xf linux-5.16.9.tar.xz
+  cd linux-5.16.9
+  
+  make mrproper
+  make menuconfig
+  make modules_install
+  
+  cp -iv arch/x86/boot/bzImage /boot/vmlinuz-5.16.9-lfs-11.1-systemd-epilar
+  cp -iv System.map /boot/System.map-5.16.9
+  cp -iv .config /boot/config-5.16.9
+  install -d /usr/share/doc/linux-5.16.9
+  cp -r Documentation/* /usr/share/doc/linux-5.16.9
+  cd ../
+  chown -R 0:0 linux-5.16.9
+  mv -v linux-5.16.9 /usr/src/kernel-5.16.9
+  ````
+  
+  # Configuring Linux Module Load Order
+  ````bash
+  install -v -m755 -d /etc/modprobe.d
+  cat > /etc/modprobe.d/usb.conf << "EOF"
+  # Begin /etc/modprobe.d/usb.conf
+  
+  install ohci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i ohci_hcd ; true
+  install uhci_hcd /sbin/modprobe ehci_hcd ; /sbin/modprobe -i uhci_hcd ; true
+  
+  # End /etc/modprobe.d/usb.conf
+  EOF
+  ````
+  
+  # Using GRUB to Set Up the Boot Process
+  
+  ````bash
+  grub-install /dev/sdb
+  
+  cat > /boot/grub/grub.cfg << "EOF"
+  # Begin /boot/grub/grub.cfg
+  set default=0
+  set timeout=5
+
+  insmod ext2
+  set root=(hd0,2)
+
+  menuentry "GNU/Linux, Linux 5.16.9-lfs-11.1-systemd" {
+          linux   /boot/vmlinuz-5.16.9-lfs-11.1-systemd root=/dev/sda2 ro
+  }
+  EOF
+  ````
