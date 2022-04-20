@@ -532,7 +532,7 @@ EOF
   insmod ext2
   set root=(hd0,2)
 
-  menuentry "GNU/Linux, Linux 5.16.9-lfs-11.1-systemd" {
+  menuentry "GNU/Linux, Linux 5.16.9-lfs-11.1-systemd-epilar" {
           linux   /boot/vmlinuz-5.16.9-lfs-11.1-systemd-epilar root=/dev/sda2 ro
   }
   EOF
