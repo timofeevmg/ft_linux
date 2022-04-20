@@ -493,6 +493,7 @@ EOF
   
   make mrproper
   make menuconfig
+  make
   make modules_install
   
   cp -iv arch/x86/boot/bzImage /boot/vmlinuz-5.16.9-lfs-11.1-systemd-epilar
