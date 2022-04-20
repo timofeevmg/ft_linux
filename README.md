@@ -10,12 +10,12 @@ chmod +x version-check.sh\
 ./version-check.sh
 
 # Partition structure of LFS disk with gparted: 
-|name  |size   |partition |file system |
-|------|-------|----------|------------|
-| boot | 200MB |/dev/sdb1 |ext2        |
-| root | 15GB  |/dev/sdb2 |ext4        |
-| home | 10GB  |/dev/sdb3 |ext4        |
-| swap | 4GB   |/dev/sdb4 |linux-swap  |
+|name  |size   |partition |file system    |
+|------|-------|----------|---------------|
+| boot | 200MB |/dev/sdb1 |ext2(boot_grub)|
+| root | 15GB  |/dev/sdb2 |ext4           |
+| home | 10GB  |/dev/sdb3 |ext4           |
+| swap | 4GB   |/dev/sdb4 |linux-swap     |
 
 
 possible partitioning with fdisc\
