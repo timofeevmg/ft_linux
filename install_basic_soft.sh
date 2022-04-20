@@ -609,6 +609,9 @@ ln -sfv libncurses.so      /usr/lib/libcurses.so
 mkdir -pv      /usr/share/doc/ncurses-6.3
 cp -v -R doc/* /usr/share/doc/ncurses-6.3
 
+cd ../
+rm -rf ncurses-6.3
+
 #Sed
 tar -xf sed-4.8.tar.xz
 cd sed-4.8
