@@ -360,8 +360,76 @@ The build instructions assume that the Host System Requirements, including symbo
   Command "LC_ALL=ru-RU.utf8 locale charmap" will give proper map:\
   UTF-8\
   
+  Check commands for locale:\
+  LC_ALL=<locale name> locale language\
+  LC_ALL=<locale name> locale charmap\
+  LC_ALL=<locale name> locale int_curr_symbol\
+  LC_ALL=<locale name> locale int_prefix\
+  For "ru-RU.utf8" are: "Russian"/"UTF-8"/"RUB"/"7"
+  
   ````bash
   cat > /etc/locale.conf << "EOF"
   LANG=ru_RU.UTF-8
   EOF
   ````
+  
+  # Creating the /etc/inputrc File
+  ````bash
+  cat > /etc/inputrc << "EOF"
+  # Begin /etc/inputrc
+  # Modified by Chris Lynn <roryo@roryo.dynup.net>
+  
+  # Allow the command prompt to wrap to the next line
+  set horizontal-scroll-mode Off
+  
+  # Enable 8bit input
+  set meta-flag On
+  set input-meta On
+  
+  # Turns off 8th bit stripping
+  set convert-meta Off
+  
+  # Keep the 8th bit for display
+  set output-meta On
+  
+  # none, visible or audible
+  set bell-style none
+  
+  # All of the following map the escape sequence of the value
+  # contained in the 1st argument to the readline specific functions
+  "\eOd": backward-word
+  "\eOc": forward-word
+  
+  # for linux console
+  "\e[1~": beginning-of-line
+  "\e[4~": end-of-line
+  "\e[5~": beginning-of-history
+  "\e[6~": end-of-history
+  "\e[3~": delete-char
+  "\e[2~": quoted-insert
+  
+  # for xterm
+  "\eOH": beginning-of-line
+  "\eOF": end-of-line
+  
+  # for Konsole
+  "\e[H": beginning-of-line
+  "\e[F": end-of-line
+  
+  # End /etc/inputrc
+  EOF
+  ````
+  
+  # Creating the /etc/shells File
+  ````bash
+  cat > /etc/shells << "EOF"
+  # Begin /etc/shells
+  
+  /bin/sh
+  /bin/bash
+  
+  # End /etc/shells
+  EOF
+  ````
+  
+  
