@@ -296,7 +296,7 @@ The build instructions assume that the Host System Requirements, including symbo
   userdel -r tester
   ````
   
-  # General Network Configuration
+  # General Network Configuration <<<<<<<<<<<<<<<<<<<<<<<< may be dhcpd requaried
   
   ````bash
   cat > /etc/systemd/network/10-ether0.link << "EOF"
@@ -308,5 +308,60 @@ The build instructions assume that the Host System Requirements, including symbo
   Name=ether0
   EOF  
   
+  cat > /etc/systemd/network/10-eth-dhcp.network << "EOF"
+  [Match]
+  Name=ether0
   
+  [Network]
+  DHCP=ipv4
+  
+  [DHCP]
+  UseDomains=true
+  EOF
+  
+  echo "epilar" > /etc/hostname
+  
+  cat > /etc/hosts << "EOF"
+  # Begin /etc/hosts
+  
+  127.0.0.1 localhost
+  127.0.1.1 epilar21
+  ::1       localhost ip6-localhost ip6-loopback
+  ff02::1   ip6-allnodes
+  ff02::2   ip6-allrouters
+  
+  # End /etc/hosts
+  EOF
+  ````
+  
+  # Configuring the system clock
+  
+  ````bash
+  cat > /etc/adjtime << "EOF"
+  0.0 0 0.0
+  0
+  UTC
+  EOF
+  ````
+  
+  # Configuring the Linux Console
+  
+  ````bash
+  cat > /etc/vconsole.conf << "EOF"
+  KEYMAP=us
+  FONT=UniCyr_8x16
+  EOF
+  ````
+  
+  # Configuring the System Locale
+  
+  locale -a - list of all locales supported by Glibc\
+  for ex. choose "ru_RU.utf8"\
+  Command "LC_ALL=ru-RU.utf8 locale charmap" will give proper map:\
+  UTF-8\
+  
+  ````bash
+  cat > /etc/locale.conf << "EOF"
+  LANG=ru_RU.UTF-8
+  EOF
   ````
