@@ -432,4 +432,55 @@ The build instructions assume that the Host System Requirements, including symbo
   EOF
   ````
   
+  # Disabling Screen Clearing at Boot Time
+  ````bash
+  mkdir -pv /etc/systemd/system/getty@tty1.service.d
   
+  cat > /etc/systemd/system/getty@tty1.service.d/noclear.conf << EOF
+  [Service]
+  TTYVTDisallocate=no
+  EOF
+  ````
+  
+  # Disabling tmpfs for /tmp (only if a separate partition for /tmp is not desired)
+  ````bash
+  ln -sfv /dev/null /etc/systemd/system/tmp.mount
+  ````
+  
+  # Configuring Automatic File Creation and Deletion
+  ````bash
+  mkdir -p /etc/tmpfiles.d
+  cp /usr/lib/tmpfiles.d/tmp.conf /etc/tmpfiles.d
+  ````
+  
+  # Limit core dumps
+  ````bash
+  mkdir -pv /etc/systemd/coredump.conf.d
+  
+  cat > /etc/systemd/coredump.conf.d/maxuse.conf << EOF
+  [Coredump]
+  MaxUse=1G
+  EOF
+  ````
+  
+  # Making the LFS System Bootable
+  ````bash
+  # Creating the /etc/fstab File
+cat > /etc/fstab << "EOF"
+# Begin /etc/fstab
+
+# file system   mount-point   type      options             dump    fsck
+#                                                                   order
+
+/dev/sda1       /boot         ext2      defaults            0       0
+/dev/sda2       /             ext4      defaults            1       1
+/dev/sda3       /home         ext4      defaults            0       0
+/dev/sda4       swap          swap      pri=1               0       0
+proc            /proc         proc      nosuid,noexec,nodev 0       0
+sysfs           /sys          sysfs     nosuid,noexec,nodev 0       0
+devpts          /dev/pts      devpts    gid=5,mode=620      0       0
+tmpfs           /run          tmpfs     defaults            0       0
+devtmpfs        /dev          devtmpfs  mode=0755,nosuid    0       0
+# End /etc/fstab
+EOF
+  ````
