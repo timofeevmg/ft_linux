@@ -472,7 +472,7 @@ cat > /etc/fstab << "EOF"
 # file system   mount-point   type      options             dump    fsck
 #                                                                   order
 
-/dev/sda1       /boot         ext2      defaults            0       0
+#/dev/sda1       /boot         ext2      defaults            0       0
 /dev/sda2       /             ext4      defaults            1       1
 /dev/sda3       /home         ext4      defaults            0       0
 /dev/sda4       swap          swap      pri=1               0       0
