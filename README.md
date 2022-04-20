@@ -496,7 +496,7 @@ EOF
   make
   make modules_install
   
-  cp -iv arch/x86/boot/bzImage /boot/vmlinuz-5.16.9-lfs-11.1-systemd-epilar
+  cp -iv arch/x86_64/boot/bzImage /boot/vmlinuz-5.16.9-lfs-11.1-systemd-epilar
   cp -iv System.map /boot/System.map-5.16.9
   cp -iv .config /boot/config-5.16.9
   install -d /usr/share/doc/linux-5.16.9
