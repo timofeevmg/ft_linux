@@ -532,7 +532,27 @@ EOF
   set root=(hd0,2)
 
   menuentry "GNU/Linux, Linux 5.16.9-lfs-11.1-systemd" {
-          linux   /boot/vmlinuz-5.16.9-lfs-11.1-systemd root=/dev/sda2 ro
+          linux   /boot/vmlinuz-5.16.9-lfs-11.1-systemd-epilar root=/dev/sda2 ro
   }
+  EOF
+  ````
+
+  # The End
+  ````bash
+  echo 11.1-systemd > /etc/lfs-release
+  
+  cat > /etc/lsb-release << "EOF"
+  DISTRIB_ID="Linux From Scratch"
+  DISTRIB_RELEASE="11.1-systemd"
+  DISTRIB_CODENAME="epilar"
+  DISTRIB_DESCRIPTION="Linux From Scratch"
+  EOF
+  
+  cat > /etc/os-release << "EOF"
+  NAME="Linux From Scratch"
+  VERSION="11.1-systemd"
+  ID=lfs
+  PRETTY_NAME="Linux From Scratch 11.1-systemd"
+  VERSION_CODENAME="epilar"
   EOF
   ````
