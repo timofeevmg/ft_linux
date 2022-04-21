@@ -10,12 +10,13 @@ chmod +x version-check.sh\
 ./version-check.sh
 
 # Partition structure of LFS disk with gparted: 
-|name  |size   |partition |file system    |
-|------|-------|----------|---------------|
-| boot | 200MB |/dev/sdb1 |ext2(boot_grub)|
-| root | 15GB  |/dev/sdb2 |ext4           |
-| home | 10GB  |/dev/sdb3 |ext4           |
-| swap | 4GB   |/dev/sdb4 |linux-swap     |
+|name         |size   |partition |file system    |
+|-------------|-------|----------|---------------|
+| (grub_boot) | 200MB |/dev/sdb1 |-(bios_grub)   |
+| boot        | 1GB   |/dev/sdb5 |ext2           |
+| root        | 15GB  |/dev/sdb2 |ext4           |
+| home        | 10GB  |/dev/sdb3 |ext4           |
+| swap        | 4GB   |/dev/sdb4 |linux-swap     |
 
 
 possible partitioning with fdisc\
@@ -23,7 +24,9 @@ and coomands:
 - mkfs -v -t ext4 /dev/<xxx>
 - mkswap /dev/<yyy>
 - lsblk - list of storage devs
-
+- df -Th - system disk space usage with file systems
+- sudo fsck -N /dev/sdb5 - file system of partition
+  
 # routine
 su - become superuser\
 export LFS=/mnt/lfs - remember mount point\
@@ -31,6 +34,8 @@ mkdir -pv $LFS\
 mount -v -t ext4 /dev/sdb2 $LFS\
 mkdir -v $LFS/home\
 mount -v -t ext4 /dev/sdb3 $LFS/home\
+mkdir -v $LFS/boot\
+mount -v -t ext2 /dev/sdb5 $LFS/boot
 sudo swapon -v /dev/sdb4\
 ## !!!
   One way to ensure that the LFS variable is always set is to edit the .bash_profile file in both your personal home directory and in /root/.bash_profile and enter the export command above. In addition, the shell specified in the /etc/passwd file for all users that need the LFS variable needs to be bash to ensure that the /root/.bash_profile file is incorporated as a part of the login process.
