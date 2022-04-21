@@ -582,6 +582,24 @@ EOF
   umount -v $LFS/boot
   umount -v $LFS
   ````
+  
+  # Install additional tools
+  ## Wget
+  ````bash
+  # as root
+  cd $LFS/sources/
+  wget https://ftp.gnu.org/gnu/wget/wget-1.21.2.tar.gz
+  # chroot
+  tar -xf wget-1.21.2.tar.gz
+  cd wget-1.21.2
+  ./configure --prefix=/usr      \
+            --sysconfdir=/etc  \
+            --with-ssl=openssl &&
+  make
+  make install
+  cd ../
+  rm -rf wget-1.21.2
+  ````
 
   # Evaluation Commands & Tools
   
