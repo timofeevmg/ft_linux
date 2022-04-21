@@ -600,6 +600,13 @@ EOF
   cd ../
   rm -rf wget-1.21.2
   ````
+  ##cURL (inside lfs as root)
+  ````bash
+  cd ../sources/
+  # p11-kit
+  wget 
+  
+  ````
 
   # Evaluation Commands & Tools
   
