@@ -42,6 +42,11 @@ sudo swapon -v /dev/sdb4\
 Another consideration is the method that is used to log into the host system. If logging in through a graphical display manager, the user's .bash_profile is not normally used when a virtual terminal is started. In this case, add the export command to the .bashrc file for the user and root. In addition, some distributions have instructions to not run the .bashrc instructions in a non-interactive bash invocation. Be sure to add the export command before the test for non-interactive use.\
 The above instructions assume that you will not be restarting your computer throughout the LFS process. If you shut down your system, you will either need to remount the LFS partition each time you restart the build process or modify your host system's /etc/fstab file to automatically remount it upon boot. For example:
 /dev/<xxx> /mnt/lfs ext4 defaults 1 1\
+````
+/dev/sdb2       /mnt/lfs        ext4        defaults        1       1
+/dev/sdb3       /mnt/lfs/home   ext4        defaults        1       2
+/dev/sdb5	      /mnt/lfs/boot 	ext2        defaults        0       2
+````
 If you use additional optional partitions, be sure to add them also.\
 sudo blkid - get device UUID\
 ## !!!
