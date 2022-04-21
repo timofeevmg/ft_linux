@@ -579,6 +579,7 @@ EOF
   umount -v $LFS/sys
   
   umount -v $LFS/home
+  umount -v $LFS/boot
   umount -v $LFS
   ````
 
