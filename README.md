@@ -571,3 +571,23 @@ EOF
   umount -v $LFS/home
   umount -v $LFS
   ````
+
+  # Evaluation Commands & Tools
+  
+  ## Check kernel:
+  uname -r\
+  cat /proc/version\
+  hostnamectl ( | grep Kernel)\
+  
+  ## Check partitions:
+  lsblk
+  
+  ## Check module loader:
+  udevadm monitor\
+  Than connect virt disk in VBox (ADD event)
+  
+  ## Check daemon manager:
+  systemctl
+  
+  
+  
