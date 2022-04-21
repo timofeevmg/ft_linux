@@ -45,7 +45,7 @@ The above instructions assume that you will not be restarting your computer thro
 ````
 /dev/sdb2       /mnt/lfs        ext4        defaults        1       1
 /dev/sdb3       /mnt/lfs/home   ext4        defaults        1       2
-/dev/sdb5	      /mnt/lfs/boot 	ext2        defaults        0       2
+/dev/sdb5       /mnt/lfs/boot   ext2        defaults        0       2
 ````
 If you use additional optional partitions, be sure to add them also.\
 sudo blkid - get device UUID\
