@@ -693,6 +693,47 @@ EOF
   rm -rf lynx2.8.9rel.1
   ````
   
+  ## GPM
+  ````bash
+  cd /sources/
+  wget https://anduin.linuxfromscratch.org/BLFS/gpm/gpm-1.20.7.tar.bz2
+  wget https://www.linuxfromscratch.org/patches/blfs/11.1/gpm-1.20.7-consolidated-1.patch
+  
+  cd /usr/src/kernel-5.16.9/
+  # Device Drivers  --->
+  # Input device support ---> [CONFIG_INPUT]
+  #   <*/M> Mouse interface   [CONFIG_INPUT_MOUSEDEV]
+  # recompile kernel if needed
+  # reboot
+  
+  tar -xf gpm-1.20.7.tar.bz2
+  cd gpm-1.20.7
+  patch -Np1 -i ../gpm-1.20.7-consolidated-1.patch &&
+  ./autogen.sh                                     &&
+  ./configure --prefix=/usr --sysconfdir=/etc      &&
+  make
+  make install                                          &&
+
+  install-info --dir-file=/usr/share/info/dir           \
+               /usr/share/info/gpm.info                 &&
+
+  rm -fv /usr/lib/libgpm.a                              &&
+  ln -sfv libgpm.so.2.1.0 /usr/lib/libgpm.so            &&
+  install -v -m644 conf/gpm-root.conf /etc              &&
+
+  install -v -m755 -d /usr/share/doc/gpm-1.20.7/support &&
+  install -v -m644    doc/support/*                     \
+                      /usr/share/doc/gpm-1.20.7/support &&
+  install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
+                      /usr/share/doc/gpm-1.20.7
+  
+  # systemd unit
+  wget https://www.linuxfromscratch.org/blfs/downloads/11.1-systemd/blfs-systemd-units-20220227.tar.xz
+  tar -xf blfs-systemd-units-20220227.tar.xz
+  cd blfs-systemd-units-20220227
+  make install-gpm
+  ````
+  
   ## cURL (inside lfs as root)
   ````bash
   cd /sources/
@@ -718,5 +759,24 @@ EOF
   ## Check daemon manager:
   systemctl
   
-  
+  ## install screen (https://www.linuxfromscratch.org/blfs/view/stable-systemd/general/screen.html)
+  ````bash
+  wget https://ftp.gnu.org/gnu/screen/screen-4.9.0.tar.gz
+  tar -xf screen-4.9.0.tar.gz
+  cd screen-4.9.0
+  sh autogen.sh                                 &&
+  ./configure --prefix=/usr                     \
+              --infodir=/usr/share/info         \
+              --mandir=/usr/share/man           \
+              --with-socket-dir=/run/screen     \
+              --with-pty-group=5                \
+              --with-sys-screenrc=/etc/screenrc &&
+
+  sed -i -e "s%/usr/local/etc/screenrc%/etc/screenrc%" {etc,doc}/* &&
+  make
+  make install &&
+  install -m 644 etc/etcscreenrc /etc/screenrc
+  cd ../
+  rm -rf screen-4.9.0
+  ````
   
