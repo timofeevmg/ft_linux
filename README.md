@@ -779,4 +779,8 @@ EOF
   cd ../
   rm -rf screen-4.9.0
   ````
+  commands:
+  - type "screen" - new screen
+  - Ctrl-a + 0...9 - switch on needed screen
+  - Ctrl-a +\ - kill all screens
   
