@@ -584,12 +584,16 @@ EOF
   ````
   
   # Install additional tools
-  ## Wget
+  ## Wget / libtasn1 / p11-kit / make-ca
   ````bash
   # as root
   cd $LFS/sources/
   wget https://ftp.gnu.org/gnu/wget/wget-1.21.2.tar.gz
-  # chroot
+  wget https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.18.0.tar.gz
+  wget https://github.com/p11-glue/p11-kit/releases/download/0.24.1/p11-kit-0.24.1.tar.xz
+  wget https://github.com/lfs-book/make-ca/releases/download/v1.10/make-ca-1.10.tar.xz
+  
+  # chroot (or in lfs as root)
   tar -xf wget-1.21.2.tar.gz
   cd wget-1.21.2
   ./configure --prefix=/usr      \
@@ -598,13 +602,71 @@ EOF
   make
   make install
   cd ../
+  
+  tar -xf libtasn1-4.18.0.tar.gz
+  cd libtasn1-4.18.0
+  ./configure --prefix=/usr --disable-static &&
+  make
+  make install
+  make -C doc/reference install-data-local
+  cd ../
+  
+  tar -xf p11-kit-0.24.1.tar.xz
+  cd p11-kit-0.24.1
+  
+  sed '20,$ d' -i trust/trust-extract-compat &&
+  cat >> trust/trust-extract-compat << "EOF"
+  # Copy existing anchor modifications to /etc/ssl/local
+  /usr/libexec/make-ca/copy-trust-modifications
+
+  # Update trust stores
+  /usr/sbin/make-ca -r
+  EOF
+  
+  mkdir p11-build &&
+  cd    p11-build &&
+
+  meson --prefix=/usr       \
+        --buildtype=release \
+        -Dtrust_paths=/etc/pki/anchors &&
+  ninja
+  
+  ninja test
+  
+  ninja install &&
+  ln -sfv /usr/libexec/p11-kit/trust-extract-compat \
+          /usr/bin/update-ca-certificates
+  cd ../../
+  
+  tar -xf make-ca-1.10.tar.xf
+  cd make-ca-1.10
+  make install &&
+  install -vdm755 /etc/ssl/local
+  /usr/sbin/make-ca -g
+  cd ../
+  
+  rm -rf libtasn1-4.18.0
+  rm -rf p11-kit-0.24.1
+  rm -rf make-ca-1.10
   rm -rf wget-1.21.2
+  
+  cd /etc/ssl/local/
+  wget http://www.cacert.org/certs/root.crt &&
+  wget http://www.cacert.org/certs/class3.crt &&
+  openssl x509 -in root.crt -text -fingerprint -setalias "CAcert Class 1 root" \
+          -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
+          > /etc/ssl/local/CAcert_Class_1_root.pem &&
+  openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
+          -addtrust serverAuth -addtrust emailProtection -addtrust codeSigning \
+          > /etc/ssl/local/CAcert_Class_3_root.pem &&
+  /usr/sbin/make-ca -r
   ````
+  
   ##cURL (inside lfs as root)
   ````bash
-  cd ../sources/
-  # p11-kit
-  wget 
+  cd /sources/
+  wget https://curl.se/download/curl-7.81.0.tar.xz
+  
   
   ````
 
