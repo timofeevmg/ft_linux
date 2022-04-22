@@ -733,14 +733,6 @@ EOF
   cd blfs-systemd-units-20220227
   make install-gpm
   ````
-  
-  ## cURL (inside lfs as root)
-  ````bash
-  cd /sources/
-  wget https://curl.se/download/curl-7.81.0.tar.xz
-  
-  
-  ````
 
   # Evaluation Commands & Tools
   
