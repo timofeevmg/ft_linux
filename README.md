@@ -662,7 +662,38 @@ EOF
   /usr/sbin/make-ca -r
   ````
   
-  ##cURL (inside lfs as root)
+  ## Lynx
+  ````bash
+  cd /sources/
+  wget https://invisible-mirror.net/archives/lynx/tarballs/lynx2.8.9rel.1.tar.bz2
+  wget https://www.linuxfromscratch.org/patches/blfs/11.1/lynx-2.8.9rel.1-security_fix-1.patch
+  
+  tar -xf lynx2.8.9rel.1.tar.bz2
+  cd lynx2.8.9rel.1
+  patch -p1 -i ../lynx-2.8.9rel.1-security_fix-1.patch
+  ./configure --prefix=/usr          \
+            --sysconfdir=/etc/lynx \
+            --datadir=/usr/share/doc/lynx-2.8.9rel.1 \
+            --with-zlib            \
+            --with-bzlib           \
+            --with-ssl             \
+            --with-screen=ncursesw \
+            --enable-locale-charset &&
+  make
+  make install-full &&
+  chgrp -v -R root /usr/share/doc/lynx-2.8.9rel.1/lynx_doc
+  sed -e '/#LOCALE/     a LOCALE_CHARSET:TRUE'     \
+    -i /etc/lynx/lynx.cfg
+  sed -e '/#DEFAULT_ED/ a DEFAULT_EDITOR:vi'       \
+    -i /etc/lynx/lynx.cfg
+  sed -e '/#PERSIST/    a PERSISTENT_COOKIES:TRUE' \
+    -i /etc/lynx/lynx.cfg
+  
+  cd ../
+  rm -rf lynx2.8.9rel.1
+  ````
+  
+  ## cURL (inside lfs as root)
   ````bash
   cd /sources/
   wget https://curl.se/download/curl-7.81.0.tar.xz
