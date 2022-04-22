@@ -784,3 +784,8 @@ EOF
   - Ctrl-a + 0...9 - switch on needed screen
   - Ctrl-a +\ - kill all screens
   
+  ## Check shasum
+  ````bash
+  shasum < .../lfs.vdi > sum.txt
+  diff sum.txt old_sun.txt
+  ````
